@@ -353,7 +353,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%}
 #experience .it .wh:empty{display:none}
 #experience .job-date{font:500 15px/1.5 'Noto Sans',sans-serif;letter-spacing:0;color:#e8c6d1;white-space:nowrap}
 @media(max-width:760px){#experience .job-date{font-size:14px}}
-</style><style id="scroll-paint-repair">@media(max-width:760px),(pointer:coarse){#grain{mix-blend-mode:normal;background-size:200px 200px}#experience,#skills2,#contact{-webkit-overflow-scrolling:touch}#skills2 .chip:before{filter:none}#contact{will-change:opacity;clip-path:none!important}}</style><style id="mobile-hero-grouping">@media(max-width:760px){#heroSub{top:calc(var(--scene-height) * .5 + 15.68vw + 22px)!important;bottom:auto!important}}</style></head><body>
+</style><style id="scroll-paint-repair">@media(max-width:760px),(pointer:coarse){#grain{mix-blend-mode:normal;background-size:200px 200px}#experience,#skills2,#contact{-webkit-overflow-scrolling:touch}#skills2 .chip:before{filter:none}#contact{will-change:opacity;clip-path:none!important}}</style><style id="mobile-hero-grouping">@media(max-width:760px){#heroSub{top:calc(var(--scene-height) * .5 + 15.68vw + 22px)!important;bottom:auto!important}}</style><style id="journey-auto-entry">#experience .tl:before{transform:scaleY(0)}#experience .tl.journey-enter:before{animation:journey-connect 1.25s cubic-bezier(.25,.7,.3,1) both}@keyframes journey-connect{from{transform:scaleY(0)}to{transform:scaleY(1)}}@media(prefers-reduced-motion:reduce){#experience .tl.journey-enter:before{transform:scaleY(1)}}</style></head><body>
 <div id="spacer"></div>
 <div id="stage">
  <svg width="0" height="0" style="position:absolute"><filter id="rough"><feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="4"/></filter></svg><canvas id="cv"></canvas>
@@ -454,16 +454,16 @@ function sigTick(cr,now){const rm=matchMedia('(prefers-reduced-motion: reduce)')
  const on=cr>.7;if(on&&!sigWas)sigStart=now;sigWas=on;sigDraw(on?Math.min(8,(now-sigStart)/1000):0)}
 
 const nodes={portrait:document.getElementById('portrait'),hl:document.getElementById('hl'),aboutWords:[...document.querySelectorAll('#about .t span')],experience:document.getElementById('experience'),journey:[...document.querySelectorAll('#experience .it')],timeline:document.querySelector('#experience .tl'),certs:[...document.querySelectorAll('#cert .cx')],progress:document.querySelector('#bar')};
-let lastSceneScroll=NaN,lastCanvasTime=-1,hoveredCard=-1,lastUserScroll=-Infinity,lastRenderedSlide=NaN,lastPointerX=NaN,lastPointerY=NaN;
+let lastSceneScroll=NaN,lastCanvasTime=-1,hoveredCard=-1,lastUserScroll=-Infinity,lastRenderedSlide=NaN,lastPointerX=NaN,lastPointerY=NaN,lastCanvasHero=null;
 function showScene(node,visible){if(node.hiddenScene===!visible)return;node.hiddenScene=!visible;node.style.visibility=visible?'visible':'hidden';node.inert=!visible}
 function render(){if(pop.classList.contains('open'))return;if(matchMedia("(prefers-reduced-motion: reduce)").matches){const c=document.getElementById("cv");if(c)c.style.opacity=S.s>120?0:1}
  const {t,s,px,py}=S,w=W(),h=H();
  const sceneChanged=!Number.isFinite(lastSceneScroll)||Math.abs(lastSceneScroll-s)>.01;
  const isMobile=mobileScene();
- showScene(els.hs,s<350);showScene(els.ab,s>300&&s<1800);showScene(nodes.experience,s>1700&&s<2850);showScene(els.sk2,s>2850&&s<3650);showScene(track,s>S1-230&&s<S2-50);showScene(els.ce,s>S2-250&&s<S2+1250);showScene(els.ct,s>S3-250);
+ showScene(els.hs,s<350);showScene(els.ab,s>300&&s<1700);showScene(nodes.experience,s>=1700&&s<2850);showScene(els.sk2,s>2850&&s<3650);showScene(track,s>S1-230&&s<S2-50);showScene(els.ce,s>S2-250&&s<S2+1250);showScene(els.ct,s>S3-250);
  showScene(els.wkh,s>S1-230&&s<S2-50);showScene(els.dots,s>S1-230&&s<S2-50);
  const scrolling=isMobile&&performance.now()-lastUserScroll<160;
- if((!scrolling||s<900)&&(!isMobile||t-lastCanvasTime>=1/30||sceneChanged)){lastCanvasTime=t;
+ if((!scrolling||s<900||lastCanvasHero!==(s<=900))&&(!isMobile||t-lastCanvasTime>=1/30||sceneChanged)){lastCanvasTime=t;lastCanvasHero=s<=900;
  // loader
  const lp=clamp(t/2.4);els.lp.style.width=(easeO(lp)*100)+'%';els.lpc.textContent=Math.round(easeO(lp)*100)+'%';
  const cu=ease(clamp((t-2.7)/0.9));
@@ -541,11 +541,11 @@ function render(){if(pop.classList.contains('open'))return;if(matchMedia("(prefe
  if(sceneChanged){
  const win=(a,b,c,d)=>clamp((s-a)/(b-a))*(1-clamp((s-c)/(d-c)));
  // about
- const ab=win(300,700,1500,1800);const aw=nodes.aboutWords;
+ const ab=s<1700?clamp((s-300)/400):0;const aw=nodes.aboutWords;
  els.ab.style.opacity=ab;aw.forEach((e,i)=>{const p=ease(clamp((s-480-i*9)/240));e.style.opacity=.12+.88*p;e.style.transform='translateY('+((1-p)*26)+'px)'});
  // experience
- const ex=win(1700,2000,2600,2850);nodes.experience.style.opacity=ex;
- nodes.journey.forEach((e,i)=>{const p=ease(clamp((s-1800-i*80)/200));e.style.opacity=.12+.88*p;e.style.transform='translateX('+((1-p)*-36)+'px)';e.style.setProperty('--p',p.toFixed(3));e.style.setProperty('--g',Math.sin(Math.PI*p).toFixed(3))});nodes.timeline.style.setProperty('--lp',ease(clamp((s-1780)/760)).toFixed(3));
+ const ex=s>=1700&&s<2850?1:0;nodes.experience.style.opacity=ex;nodes.timeline.classList.toggle('journey-enter',!!ex);
+ nodes.journey.forEach((e,i)=>{const p=1;e.style.opacity=.12+.88*p;e.style.transform='translateX('+((1-p)*-36)+'px)';e.style.setProperty('--p',p.toFixed(3));e.style.setProperty('--g',Math.sin(Math.PI*p).toFixed(3))});
  // skills
  const sk2=win(2850,3100,3450,3650);els.sk2.style.opacity=sk2;els.sk2.classList.toggle('seen',sk2>.4);
  // certificates
