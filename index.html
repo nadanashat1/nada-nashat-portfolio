@@ -382,6 +382,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%}
  <div id="cursor"></div><div id="grain"></div>
 </div>
 <script src="6-portfolio-media.js"></script>
+<script src="7-portfolio-projects.js"></script>
 <script>
 document.querySelector("#portrait img").src=PORTFOLIO_PORTRAIT;
 let sceneWidth=innerWidth,sceneHeight=innerHeight;
@@ -405,7 +406,9 @@ const projects=[
 ["Real Estate","LISTINGS PLATFORM","Full-image explorer, map, viewing scheduler",["#07080C","#5E0B1E"]],
 ["Lens","PHOTOGRAPHY BLOG","Arabic RTL, search and categories",["#1C2340","#07080C"]],
 ["COSMOS","SPACE DASHBOARD","NASA data views",["#10183a","#5E0B1E"]],
-["NutriPlan","MEAL PLANNER","Recipes, scanner, food log",["#3b0714","#1C2340"]]];
+["NutriPlan","MEAL PLANNER","Recipes, scanner, food log",["#3b0714","#1C2340"]],
+["Kanban","TASK MANAGER","TypeScript task board, priorities and due dates",["#1C2340","#5E0B1E"]],
+["QuizMaster","QUIZ APP","Timed questions, validation and score summary",["#5E0B1E","#1C2340"]]];
 (()=>{const tb=document.querySelectorAll('#stabs button'),ind=document.getElementById('tind');function pos(){const b=document.querySelector('#stabs button.on');ind.style.left=b.offsetLeft+'px';ind.style.width=b.offsetWidth+'px'}tb.forEach(b=>b.onclick=()=>{tb.forEach(x=>x.classList.toggle('on',x===b));document.querySelectorAll('#skills2 .pn').forEach(p=>p.classList.toggle('on',p.id==='p-'+b.dataset.p));pos()});window.__tabpos=pos;setTimeout(pos,300);addEventListener('resize',pos)})();
 const track=document.getElementById('track');
 track.innerHTML=projects.map((p,i)=>{const d=PD[i];return `<div class="card cardx" style="width:460px;background:linear-gradient(145deg,${p[3][0]},${p[3][1]})"><div class="num">${String(i+1).padStart(2,'0')}</div><div class="shot poster">${d.img?'<img src="data:image/jpeg;base64,'+d.img+'" alt="'+p[0]+' project cover">':'<div class="typo"><b>Social,<br>made in React</b><span>FEED · LIKES · COMMENTS · DARK / LIGHT</span></div>'}</div><div class="cat">${p[1]}</div><div class="nm">${p[0]}</div><div class="ds">${p[2]}${d.note?'<br><span style="color:#d36a85">'+d.note+'</span>':''}</div><div class="lk"><a class="p" href="${d.demo}" target="_blank" rel="noopener" title="Live demo"><svg class="ico" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v5H5V6h5"/></svg>LIVE DEMO ↗</a><a href="${d.repo}" target="_blank" rel="noopener">GITHUB ↗</a></div></div>`}).join('')+'<div class="end"></div>';
@@ -420,7 +423,7 @@ function openCV(){openPop('<div class="cvpages"><img class="cvpreview" src="2-Na
 function closePop(){pop.classList.remove('open');document.body.style.overflow='';document.querySelector('#L').inert=false;previousFocus?.focus({preventScroll:true})}
 pop.addEventListener('click',e=>{if(e.target===pop||e.target.closest('.x'))closePop()});addEventListener('keydown',e=>{if(e.key==='Escape')closePop()});
 
-function openProject(i){const d=PD[i];openPop('<img src="data:image/jpeg;base64,'+d.img+'" alt="'+esc(d.title)+' cover">','<small>PROJECT '+String(i+1).padStart(2,'0')+' / 10</small><h3>'+esc(d.title)+'</h3><p>'+esc(d.what)+'</p><h5>WHAT IT DOES</h5><ul>'+d.feat.map(f=>'<li>'+esc(f)+'</li>').join('')+'</ul><h5>BUILT WITH</h5><div class="tg">'+d.tech.map(t=>'<i>'+esc(t)+'</i>').join('')+'</div>'+(d.role?'<h5>MY ROLE</h5><p>'+esc(d.role)+'</p>':'')+(d.dnote?'<div class="nt">'+esc(d.dnote)+'</div>':'')+'<div class="ac"><a class="p" href="'+d.demo+'" target="_blank" rel="noopener">'+PI.ext+'LIVE DEMO</a><a href="'+d.repo+'" target="_blank" rel="noopener">'+PI.gh+'GITHUB</a></div>')}
+function openProject(i){const d=PD[i];openPop('<img src="data:image/jpeg;base64,'+d.img+'" alt="'+esc(d.title)+' cover">','<small>PROJECT '+String(i+1).padStart(2,'0')+' / '+projects.length+'</small><h3>'+esc(d.title)+'</h3><p>'+esc(d.what)+'</p><h5>WHAT IT DOES</h5><ul>'+d.feat.map(f=>'<li>'+esc(f)+'</li>').join('')+'</ul><h5>BUILT WITH</h5><div class="tg">'+d.tech.map(t=>'<i>'+esc(t)+'</i>').join('')+'</div>'+(d.role?'<h5>MY ROLE</h5><p>'+esc(d.role)+'</p>':'')+(d.dnote?'<div class="nt">'+esc(d.dnote)+'</div>':'')+'<div class="ac"><a class="p" href="'+d.demo+'" target="_blank" rel="noopener">'+PI.ext+'LIVE DEMO</a><a href="'+d.repo+'" target="_blank" rel="noopener">'+PI.gh+'GITHUB</a></div>')}
 function openCert(k){if(k==='uneeq')openPop('<img src="'+CERTIMG+'" alt="UneeQ certificate">','<small>CERTIFICATE</small><h3>Web Development Internship</h3><p>Issued by UneeQ Interns, July 2025.</p><h5>INTERNSHIP DATES</h5><p>Mar 2025 - Aug 2025</p><h5>WHAT I DID</h5><ul><li>Built responsive web apps with React.js, JavaScript, HTML, CSS and Bootstrap under senior developer guidance.</li><li>Implemented interactive UI and reusable components, and consumed REST APIs.</li><li>Debugged and tested features with backend developers.</li></ul><div class="ac"><a class="p" href="'+CERTIMG+'" download="uneeq-certificate.jpg">'+PI.dl+'VIEW CERTIFICATE FILE</a></div>');else openPop('<div class="th" style="position:relative;width:100%;height:260px;border-radius:14px;overflow:hidden">'+document.querySelector('#cert .cx[data-c=route] .th').innerHTML+'</div>','<small>IN PROGRESS</small><h3>Full Stack Web Development</h3><p>Route Academy</p><h5>DATES</h5><p>Apr 2026 - Present</p><h5>STATUS</h5><p>Full Stack Web Development diploma, in progress. Certificate not yet issued.</p>')}
 document.querySelectorAll('#cert .cx').forEach(e=>{e.addEventListener('click',()=>openCert(e.dataset.c));e.addEventListener('keydown',ev=>{if(ev.key==='Enter')openCert(e.dataset.c)})});
 let cdx=0;cards.forEach((c,i)=>{c.addEventListener('pointerdown',e=>{cdx=e.clientX});c.addEventListener('click',e=>{if(Math.abs(e.clientX-cdx)>10||e.target.closest('a'))return;if(Math.abs(i-Math.round(S.slide||0))>0&&!CAP){go2(i)}else openProject(i)})});
@@ -533,7 +536,7 @@ function render(){if(pop.classList.contains('open'))return;if(matchMedia("(prefe
   c.firstElementChild.style.transform=`translate(${-dist*40}px,${dist*20}px)`;
  });
  hoveredCard=hoverIdx;els.bar.style.width=(sl/9*100)+'%';els.L.querySelector('#bar').style.opacity=pv;
- els.dots.style.opacity=pv;els.dots.textContent=String(Math.round(sl)+1).padStart(2,'0')+' / 10';
+ els.dots.style.opacity=pv;els.dots.textContent=String(Math.round(sl)+1).padStart(2,'0')+' / '+projects.length;
  els.cnt.textContent='';
  }
  if(sceneChanged){
@@ -601,7 +604,7 @@ if(CAP&&q.has('v')){
  // Navigation follows the same scroll timeline as native scrolling.
  document.querySelectorAll('a[data-scroll]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();const y=+a.dataset.scroll;scrollTo({top:y,behavior:'instant'});history.replaceState(null,'',a.getAttribute('href'))}));
  // make document scroll drive S
- let target=0,cur=0,t0=performance.now();let tg=0;window.go2=i=>{tg=i};const go=d=>{tg=Math.max(0,Math.min(9,Math.round(tg)+d))};document.getElementById('prevB').onclick=()=>go(-1);document.getElementById('nextB').onclick=()=>go(1);addEventListener('keydown',e=>{if(pop.classList.contains('open')||S.s<S1-230||S.s>S2-50||/INPUT|TEXTAREA/.test(e.target.tagName))return;if(e.key==='ArrowRight')go(1);if(e.key==='ArrowLeft')go(-1)});let dx0=null;addEventListener('pointerdown',e=>{dx0=pop.classList.contains('open')?null:e.clientX});addEventListener('pointerup',e=>{if(dx0!==null&&Math.abs(e.clientX-dx0)>60&&S.s>S1-300&&S.s<S2)go(e.clientX<dx0?1:-1);dx0=null});let mx=W()/2,my=H()/2;
+ let target=0,cur=0,t0=performance.now();let tg=0;window.go2=i=>{tg=i};const go=d=>{tg=Math.max(0,Math.min(projects.length-1,Math.round(tg)+d))};document.getElementById('prevB').onclick=()=>go(-1);document.getElementById('nextB').onclick=()=>go(1);addEventListener('keydown',e=>{if(pop.classList.contains('open')||S.s<S1-230||S.s>S2-50||/INPUT|TEXTAREA/.test(e.target.tagName))return;if(e.key==='ArrowRight')go(1);if(e.key==='ArrowLeft')go(-1)});let dx0=null;addEventListener('pointerdown',e=>{dx0=pop.classList.contains('open')?null:e.clientX});addEventListener('pointerup',e=>{if(dx0!==null&&Math.abs(e.clientX-dx0)>60&&S.s>S1-300&&S.s<S2)go(e.clientX<dx0?1:-1);dx0=null});let mx=W()/2,my=H()/2;
  addEventListener('scroll',()=>{target=scrollY;lastUserScroll=performance.now()},{passive:true});
  addEventListener('pointermove',e=>{mx=e.clientX;my=e.clientY});
  Promise.race([wait(),new Promise(r=>setTimeout(r,2000))]).then(()=>{build();window.__tabpos&&window.__tabpos();
