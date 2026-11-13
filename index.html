@@ -353,7 +353,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%}
 #experience .it .wh:empty{display:none}
 #experience .job-date{font:500 15px/1.5 'Noto Sans',sans-serif;letter-spacing:0;color:#e8c6d1;white-space:nowrap}
 @media(max-width:760px){#experience .job-date{font-size:14px}}
-</style><style id="scroll-paint-repair">@media(max-width:760px),(pointer:coarse){#grain{mix-blend-mode:normal;background-size:200px 200px}#experience,#skills2,#contact{-webkit-overflow-scrolling:touch}#skills2 .chip:before{filter:none}#contact{will-change:opacity;clip-path:none!important}}</style></head><body>
+</style><style id="scroll-paint-repair">@media(max-width:760px),(pointer:coarse){#grain{mix-blend-mode:normal;background-size:200px 200px}#experience,#skills2,#contact{-webkit-overflow-scrolling:touch}#skills2 .chip:before{filter:none}#contact{will-change:opacity;clip-path:none!important}}</style><style id="mobile-hero-grouping">@media(max-width:760px){#heroSub{top:calc(var(--scene-height) * .5 + 15.68vw + 22px)!important;bottom:auto!important}}</style></head><body>
 <div id="spacer"></div>
 <div id="stage">
  <svg width="0" height="0" style="position:absolute"><filter id="rough"><feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="4"/></filter></svg><canvas id="cv"></canvas>
@@ -554,7 +554,7 @@ function render(){if(pop.classList.contains('open'))return;if(matchMedia("(prefe
  // contact
  const cr=ease(clamp((s-(S3-250))/650));
  els.ct.style.clipPath=isMobile?'none':`circle(${cr*Math.hypot(w,h)}px at 50% 70%)`;els.ct.style.opacity=cr>0?1:0;
- const ci=clamp((s-(S3+100))/500);
+ const ci=isMobile?(cr>0?1:0):clamp((s-(S3+100))/500);
  els.ct.children[0].style.transform=`translateY(${(1-easeO(ci))*60}px)`;els.ct.children[0].style.opacity=ci;
 lastSceneScroll=s;
  }
