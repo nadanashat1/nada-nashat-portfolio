@@ -353,7 +353,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%}
 #experience .it .wh:empty{display:none}
 #experience .job-date{font:500 15px/1.5 'Noto Sans',sans-serif;letter-spacing:0;color:#e8c6d1;white-space:nowrap}
 @media(max-width:760px){#experience .job-date{font-size:14px}}
-</style></head><body>
+</style><style id="scroll-paint-repair">@media(max-width:760px),(pointer:coarse){#grain{mix-blend-mode:normal;background-size:200px 200px}#experience,#skills2,#contact{-webkit-overflow-scrolling:touch}#skills2 .chip:before{filter:none}#contact{will-change:opacity;clip-path:none!important}}</style></head><body>
 <div id="spacer"></div>
 <div id="stage">
  <svg width="0" height="0" style="position:absolute"><filter id="rough"><feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="4"/></filter></svg><canvas id="cv"></canvas>
@@ -454,15 +454,16 @@ function sigTick(cr,now){const rm=matchMedia('(prefers-reduced-motion: reduce)')
  const on=cr>.7;if(on&&!sigWas)sigStart=now;sigWas=on;sigDraw(on?Math.min(8,(now-sigStart)/1000):0)}
 
 const nodes={portrait:document.getElementById('portrait'),hl:document.getElementById('hl'),aboutWords:[...document.querySelectorAll('#about .t span')],experience:document.getElementById('experience'),journey:[...document.querySelectorAll('#experience .it')],timeline:document.querySelector('#experience .tl'),certs:[...document.querySelectorAll('#cert .cx')],progress:document.querySelector('#bar')};
-let lastSceneScroll=NaN,lastCanvasTime=-1,hoveredCard=-1;
+let lastSceneScroll=NaN,lastCanvasTime=-1,hoveredCard=-1,lastUserScroll=-Infinity,lastRenderedSlide=NaN,lastPointerX=NaN,lastPointerY=NaN;
 function showScene(node,visible){if(node.hiddenScene===!visible)return;node.hiddenScene=!visible;node.style.visibility=visible?'visible':'hidden';node.inert=!visible}
-function render(){if(matchMedia("(prefers-reduced-motion: reduce)").matches){const c=document.getElementById("cv");if(c)c.style.opacity=S.s>120?0:1}
+function render(){if(pop.classList.contains('open'))return;if(matchMedia("(prefers-reduced-motion: reduce)").matches){const c=document.getElementById("cv");if(c)c.style.opacity=S.s>120?0:1}
  const {t,s,px,py}=S,w=W(),h=H();
  const sceneChanged=!Number.isFinite(lastSceneScroll)||Math.abs(lastSceneScroll-s)>.01;
  const isMobile=mobileScene();
  showScene(els.hs,s<350);showScene(els.ab,s>300&&s<1800);showScene(nodes.experience,s>1700&&s<2850);showScene(els.sk2,s>2850&&s<3650);showScene(track,s>S1-230&&s<S2-50);showScene(els.ce,s>S2-250&&s<S2+1250);showScene(els.ct,s>S3-250);
  showScene(els.wkh,s>S1-230&&s<S2-50);showScene(els.dots,s>S1-230&&s<S2-50);
- if(!isMobile||t-lastCanvasTime>=1/30||sceneChanged){lastCanvasTime=t;
+ const scrolling=isMobile&&performance.now()-lastUserScroll<160;
+ if((!scrolling||s<900)&&(!isMobile||t-lastCanvasTime>=1/30||sceneChanged)){lastCanvasTime=t;
  // loader
  const lp=clamp(t/2.4);els.lp.style.width=(easeO(lp)*100)+'%';els.lpc.textContent=Math.round(easeO(lp)*100)+'%';
  const cu=ease(clamp((t-2.7)/0.9));
@@ -495,6 +496,11 @@ function render(){if(matchMedia("(prefers-reduced-motion: reduce)").matches){con
   cx.globalAlpha=A;cx.fillStyle=p.hue?'#d36a85':'#E6E9EF';cx.fillRect(X,Y,p.sz,p.sz)}
  cx.globalAlpha=1;
  }
+ const slideChanged=!Number.isFinite(lastRenderedSlide)||Math.abs((S.slide||0)-lastRenderedSlide)>.0001;
+ const pointerChanged=px!==lastPointerX||py!==lastPointerY;
+ const signatureActive=s>S3-250&&(sigStart===null||performance.now()-sigStart<8000);
+ if(t>7&&!sceneChanged&&!slideChanged&&(isMobile||!pointerChanged)&&!signatureActive)return;
+ lastRenderedSlide=S.slide||0;lastPointerX=px;lastPointerY=py;
  // hero text
  const hsA=clamp((t-5.4)/1.0)*(1-clamp(s/350));
 
@@ -507,7 +513,7 @@ function render(){if(matchMedia("(prefers-reduced-motion: reduce)").matches){con
  els.hs.style.opacity=hsA;els.hs.style.transform=`translateY(${(1-easeO(clamp((t-5.4)/1.0)))*24-s*.3}px)`;
  els.sh.style.opacity=hsA;els.sh.firstElementChild.style.transform=`scaleY(${.3+.7*Math.abs(Math.sin(t*1.6))})`;
  els.nav.style.opacity=clamp((t-3.4)/.8);
- if(sceneChanged||s>S1-230&&s<S2-50){
+ if(sceneChanged||slideChanged||(!isMobile&&pointerChanged&&s>S1-230&&s<S2-50)){
  // track
  const tin=ease(clamp((s-(S1-230))/330));
  const tout=ease(clamp((s-(S2-350))/300));const pv=tin*(1-tout);
@@ -547,7 +553,7 @@ function render(){if(matchMedia("(prefers-reduced-motion: reduce)").matches){con
  nodes.certs.forEach((e,i)=>{const p=ease(clamp((s-(S2-100+i*160))/380));e.style.opacity=p;e.style.transform='translateY('+((1-p)*50)+'px) rotate('+((1-p)*(i%2?3:-3))+'deg)'});
  // contact
  const cr=ease(clamp((s-(S3-250))/650));
- els.ct.style.clipPath=`circle(${cr*Math.hypot(w,h)}px at 50% 70%)`;els.ct.style.opacity=cr>0?1:0;
+ els.ct.style.clipPath=isMobile?'none':`circle(${cr*Math.hypot(w,h)}px at 50% 70%)`;els.ct.style.opacity=cr>0?1:0;
  const ci=clamp((s-(S3+100))/500);
  els.ct.children[0].style.transform=`translateY(${(1-easeO(ci))*60}px)`;els.ct.children[0].style.opacity=ci;
 lastSceneScroll=s;
@@ -598,10 +604,10 @@ if(CAP&&q.has('v')){
  document.querySelectorAll('a[data-scroll]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();const y=+a.dataset.scroll;scrollTo({top:y,behavior:'instant'});history.replaceState(null,'',a.getAttribute('href'))}));
  // make document scroll drive S
  let target=0,cur=0,t0=performance.now();let tg=0;window.go2=i=>{tg=i};const go=d=>{tg=Math.max(0,Math.min(9,Math.round(tg)+d))};document.getElementById('prevB').onclick=()=>go(-1);document.getElementById('nextB').onclick=()=>go(1);addEventListener('keydown',e=>{if(pop.classList.contains('open')||S.s<S1-230||S.s>S2-50||/INPUT|TEXTAREA/.test(e.target.tagName))return;if(e.key==='ArrowRight')go(1);if(e.key==='ArrowLeft')go(-1)});let dx0=null;addEventListener('pointerdown',e=>{dx0=pop.classList.contains('open')?null:e.clientX});addEventListener('pointerup',e=>{if(dx0!==null&&Math.abs(e.clientX-dx0)>60&&S.s>S1-300&&S.s<S2)go(e.clientX<dx0?1:-1);dx0=null});let mx=W()/2,my=H()/2;
- addEventListener('scroll',()=>{target=scrollY});
+ addEventListener('scroll',()=>{target=scrollY;lastUserScroll=performance.now()},{passive:true});
  addEventListener('pointermove',e=>{mx=e.clientX;my=e.clientY});
  Promise.race([wait(),new Promise(r=>setTimeout(r,2000))]).then(()=>{build();window.__tabpos&&window.__tabpos();
-  (function loop(){const t=(performance.now()-t0)/1000;cur=target;S.px+=(mx-S.px)*.2;S.py+=(my-S.py)*.2;S.t=t;S.s=cur;S.slide=(S.slide||0)+(tg-(S.slide||0))*.12;render();requestAnimationFrame(loop)})()});
+  (function loop(){const t=(performance.now()-t0)/1000;cur=target;S.px+=(mx-S.px)*.2;S.py+=(my-S.py)*.2;S.t=t;S.s=cur;const sd=tg-(S.slide||0);S.slide=Math.abs(sd)<.001?tg:(S.slide||0)+sd*.12;render();requestAnimationFrame(loop)})()});
 }
 </script><style>#sig{top:auto!important;bottom:3.5vh!important;right:3.5vw!important;width:min(18vw,230px)!important}@media(max-width:760px){#sig{position:static!important;transform:none!important;width:135px!important;margin:22px 18px 6px 0!important;align-self:flex-end}}</style><style>@media(max-width:760px){#prevB{left:10px!important}#nextB{left:auto!important;right:10px!important}}</style><style>@media(max-width:760px){#contact{overflow-y:auto;border-top:60px solid var(--bg2);padding-top:40px!important;padding-bottom:28px}#contact p{padding:0 22px}}</style></body></html>
 <style id="course-progress-update">.ldr{width:72px;height:4px;margin:-2px 0 0 -36px;border:0;border-radius:9px;background:rgba(230,233,239,.13);animation:none;overflow:hidden}.ldr:after{content:"";display:block;width:40%;height:100%;border-radius:9px;background:linear-gradient(90deg,#9e3852,#e6e9ef);animation:course-progress 2.8s ease-in-out infinite alternate}@keyframes course-progress{from{transform:translateX(-50%)}to{transform:translateX(200%)}}</style>
