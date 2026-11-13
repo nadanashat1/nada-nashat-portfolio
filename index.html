@@ -486,8 +486,6 @@ function render(){if(pop.classList.contains('open'))return;if(matchMedia("(prefe
   else{
    X=ax+(p.tx-ax)*as;Y=ay+(p.ty-ay)*as;
    const wob=(1-as)*0+Math.sin(t*2+p.ph)*.8;X+=wob;Y+=Math.cos(t*2.3+p.ph)*.8;
-   // pointer repel
-   const dx=X-px,dy=Y-py,dd=Math.hypot(dx,dy);if(!isMobile&&dd<120&&dis<.5){const f=(120-dd)/120;X+=dx/(dd+1)*f*f*60;Y+=dy/(dd+1)*f*f*60}
    // scroll disperse
    X+=p.dx*dis*500;Y+=(p.dy*dis*400)-dis*s*.15;
    A=(1-dis*.9)*clamp(as*1.2)
