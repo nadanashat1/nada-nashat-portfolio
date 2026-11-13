@@ -1,0 +1,19 @@
+{
+  "redirects": [
+    {
+      "source": "/Nada_Nashat_CV.pdf",
+      "destination": "/1-Nada_Nashat_CV.pdf",
+      "permanent": false
+    },
+    {
+      "source": "/2-Nada_Nashat_CV-preview-1.webp",
+      "destination": "/2-2-Nada_Nashat_CV-preview-1.webp",
+      "permanent": false
+    },
+    {
+      "source": "/3-Nada_Nashat_CV-preview-2.webp",
+      "destination": "/3-3-Nada_Nashat_CV-preview-2.webp",
+      "permanent": false
+    }
+  ]
+}
