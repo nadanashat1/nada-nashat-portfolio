@@ -523,7 +523,7 @@ function render(){if(pop.classList.contains('open'))return;if(matchMedia("(prefe
  const cardW=Math.min(460,w-44),cardH=Math.min(590,h-250);track.style.setProperty('--card-w',cardW+'px');track.style.setProperty('--card-h',cardH+'px');track.style.transform=`translate3d(${w/2-cardW/2-sl*(cardW+40)}px,${(1-tin)*60-tout*60}px,0)`;
  els.wkh.style.opacity=pv;els.wkh.style.transform=`translateX(${(1-tin)*-40}px)`;
  for(const b of [els.pb,els.nb]){b.style.opacity=pv;b.style.pointerEvents=pv>.5?'auto':'none'}
- els.pb.style.opacity=sl>.01?pv:0;els.nb.style.opacity=sl<8.99?pv:0;els.pb.disabled=pv<.5||sl<=.01;els.nb.disabled=pv<.5||sl>=8.99;els.pb.style.pointerEvents=els.pb.disabled?'none':'auto';els.nb.style.pointerEvents=els.nb.disabled?'none':'auto';
+ els.pb.style.opacity=sl>.01?pv:0;els.nb.style.opacity=sl<projects.length-1.01?pv:0;els.pb.disabled=pv<.5||sl<=.01;els.nb.disabled=pv<.5||sl>=projects.length-1.01;els.pb.style.pointerEvents=els.pb.disabled?'none':'auto';els.nb.style.pointerEvents=els.nb.disabled?'none':'auto';
  els.pb.classList.toggle('press',!!S.pp);els.nb.classList.toggle('press',!!S.np);
  let hoverIdx=-1;
  cards.forEach((c,i)=>{
